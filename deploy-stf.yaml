@@ -1,0 +1,68 @@
+---
+- name: Deploy Service Telemetry Framework Instance
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Subscribe to Smart Gateway Operator to identify incoming metrics from OpenStack
+      k8s:
+        state: present
+        definition:
+          apiVersion: infra.watch/v1beta1
+          kind: ServiceTelemetry
+          metadata:
+            name: default
+          spec:
+            alerting:
+              alertmanager:
+                storage:
+                  strategy: ephemeral
+              enabled: true
+            backends:
+              events:
+                elasticsearch:
+                  enabled: false
+                  storage:
+                    strategy: ephemeral
+              metrics:
+                prometheus:
+                  enabled: true
+                  scrapeInterval: 10s
+                  storage:
+                    strategy: ephemeral
+            graphing:
+              enabled: true
+              grafana:
+                adminPassword: secret
+                adminUser: root
+                disableSignoutMenu: false
+                ingressEnabled: false
+                baseImage: docker.io/grafana/grafana:8.1.2
+            highAvailability:
+              enabled: false
+            transports:
+              qdr:
+                enabled: true
+                web:
+                  enabled: false
+            clouds:
+              - name: cloud1
+                metrics:
+                  collectors:
+                    - collectorType: collectd
+                      subscriptionAddress: collectd/telemetry
+                      debugEnabled: false
+                    - collectorType: ceilometer
+                      subscriptionAddress: anycast/ceilometer/metering.sample
+                      debugEnabled: false
+                    - collectorType: sensubility
+                      subscriptionAddress: sensubility/telemetry
+                      debugEnabled: false
+                events:
+                  collectors:
+                    - collectorType: collectd
+                      subscriptionAddress: collectd/notify
+                      debugEnabled: false
+                    - collectorType: ceilometer
+                      subscriptionAddress: anycast/ceilometer/event.sample
+                      debugEnabled: false

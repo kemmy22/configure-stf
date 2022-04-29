@@ -1,0 +1,11 @@
+---
+- name: provision grafana dashboard
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: grafana dashb
+      k8s:
+        state: present
+        namespace: service-telemetry
+        src: dashboard.yaml

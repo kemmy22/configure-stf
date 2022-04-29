@@ -1,0 +1,113 @@
+---
+- name: Run Deploy Prepare for Service Telemetry Framework (STF)
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+  project_name: "service-telemetry"
+  tasks:
+
+# Create the namespace/project for STF deployment
+    - name: create {{ project_name }} namespace
+      k8s:
+        api_version: v1
+        kind: namespace
+        name: "{{ project_name }}"
+        state: present
+
+# Create an Operator Group
+    - name: create operator groups
+      k8s:
+        state: present
+        definition:
+          api_version: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: service-telemetry-operator-group
+            namespace: service-telemetry
+          spec:
+            targetNamespaces: service-telemetry
+
+# Subcribe to OperatorHub.io for obtaining community operators such as grafana, prometheus.
+    - name: Subscribe to OperatorHub.io Catalog for installing data storage and visualization operators.
+      k8s:
+        state: present
+        definition:
+          api_version: operators.coreos.com/v1alpha1
+          kind: CatalogSource
+          metadata:
+            name: operatorhubio-operators
+            namespace: openshift-marketplace
+          spec:
+            sourceType: grpc
+            image: quay.io/operatorhubio/catalog:latest
+            displayName: OperatorHub.io Operators
+            publisher: OperatorHub.io
+
+# AMQ Certificate Manager
+    - name: Subscribe to Active MQ Certificate Manager Operator.
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: amq7-cert-manager-operator
+            namespace: openshift-operators
+          spec:
+            channel: 1.x
+            installPlanApproval: Automatic
+            name: amq7-cert-manager-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+# Configure Smart Gateway to seggregate metrics and events
+    - name: Subscribe to Smart Gateway Operator to identify incoming metrics from OpenStack
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: smart-gateway-operator
+            namespace: service-telemetry
+          spec:
+            channel: stable-1.3
+            installPlanApproval: Automatic
+            name: smart-gateway-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+# STF Operator
+    - name: Subscribe to the Service Telemetry Operator to Manage the monitoring applications
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: service-telemetry-operator
+            namespace: service-telemetry
+          spec:
+            channel: stable-1.3
+            installPlanApproval: Automatic
+            name: service-telemetry-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+# Obtain the grafana operator from community hub for dashboards to view OpenStack metering and monitoring data
+    - name: Subscribe to the Grafana Operator for installalling and configuring grafana dashboard
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: grafana-operator
+            namespace: service-telemetry
+          spec:
+            channel: alpha
+            installPlanApproval: Automatic
+            name: grafana-operator
+            source: operatorhubio-operators
+            sourceNamespace: openshift-marketplace
