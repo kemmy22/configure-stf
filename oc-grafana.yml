@@ -3,7 +3,7 @@
   gather_facts: false
   connection: local
   tasks:
-    - name: Subscribe to the Grafana Operator for installalling and configuring grafana dashboard
+    - name: Subscribe to the Grafana Operator for installing and configuring grafana dashboard
       k8s:
         state: present
         definition:

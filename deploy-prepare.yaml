@@ -2,17 +2,17 @@
 - hosts: localhost
   gather_facts: true
   connection: local
+  vars:
+    execute: false
   tasks:
+
     - name: execute requested tasks
       set_fact:
         execute: true
-      tags:
-        - sgateway
-        - stf
-        - grafana
-      set_fact:
-        execute: false
-
+      when:
+        tags:
+          - grafana
+      
 - import_playbook: oc-project.yml
   tags:
     - always
@@ -33,14 +33,14 @@
   tags:
     - sgateway
     - stf
-  when: execute == true
+    - never
 
 - import_playbook: oc-stfobject.yml
   tags:
     - stf
-  when: execute == true
+    - never
 
 - import_playbook: oc-grafana.yml
   tags:
     - grafana
-  when: execute == true
+    - never
