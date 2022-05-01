@@ -1,0 +1,53 @@
+- name: Prepping STF For Installation
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Subscribe to Smart Gateway Operator to identify incoming metrics from OpenStack
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: smart-gateway-operator
+            namespace: service-telemetry
+          spec:
+            channel: stable-1.3
+            installPlanApproval: Automatic
+            name: smart-gateway-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+
+    - name: Subscribe to the Service Telemetry Operator to Manage the monitoring applications
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: service-telemetry-operator
+            namespace: service-telemetry
+          spec:
+            channel: stable-1.3
+            installPlanApproval: Automatic
+            name: service-telemetry-operator
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+
+    - name: Subscribe to the Grafana Operator for installalling and configuring grafana dashboard
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: grafana-operator
+            namespace: service-telemetry
+          spec:
+            channel: alpha
+            installPlanApproval: Automatic
+            name: grafana-operator
+            source: operatorhubio-operators
+            sourceNamespace: openshift-marketplace

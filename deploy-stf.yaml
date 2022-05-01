@@ -12,6 +12,7 @@
           kind: ServiceTelemetry
           metadata:
             name: default
+            namespace: service-telemetry
           spec:
             alerting:
               alertmanager:

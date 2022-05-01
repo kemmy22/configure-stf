@@ -1,0 +1,17 @@
+- name: stf namepsace
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: create operator groups
+      k8s:
+        state: present
+        definition:
+          api_version: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: service-telemetry-operator-group
+            namespace: service-telemetry
+          spec:
+            targetNamespaces: 
+            - service-telemetry

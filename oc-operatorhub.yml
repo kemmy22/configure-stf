@@ -1,0 +1,19 @@
+- name: stf namepsace
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Subscribe to OperatorHub.io Catalog for installing data storage and visualization operators.
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: CatalogSource
+          metadata:
+            name: operatorhubio-operators
+            namespace: openshift-marketplace
+          spec:
+            sourceType: grpc
+            image: quay.io/operatorhubio/catalog:latest
+            displayName: OperatorHub.io Operators
+            publisher: OperatorHub.io

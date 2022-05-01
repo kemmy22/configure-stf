@@ -1,0 +1,21 @@
+- name: Prepping STF For Installation
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Subscribe to the Grafana Operator for installalling and configuring grafana dashboard
+      k8s:
+        state: present
+        definition:
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: grafana-operator
+            namespace: service-telemetry
+          spec:
+            channel: alpha
+            installPlanApproval: Automatic
+            name: grafana-operator
+            source: operatorhubio-operators
+            sourceNamespace: openshift-marketplace
+            targetNamespaces: service-telemetry

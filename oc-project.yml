@@ -1,0 +1,13 @@
+- name: stf namepsace
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    project_name: "service-telemetry"
+  tasks:
+    - name: create {{ project_name }} namespace
+      k8s:
+        api_version: v1
+        kind: Namespace
+        name: "{{ project_name }}"
+        state: present
