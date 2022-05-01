@@ -1,18 +1,8 @@
 ---
 - hosts: localhost
-  gather_facts: true
+  gather_facts: false
   connection: local
-  vars:
-    execute: false
-  tasks:
 
-    - name: execute requested tasks
-      set_fact:
-        execute: true
-      when:
-        tags:
-          - grafana
-      
 - import_playbook: oc-project.yml
   tags:
     - always
