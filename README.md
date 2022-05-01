@@ -5,7 +5,7 @@ Hello, this project let's you configure and deploy Service Telemetry Framework [
 Here's how to get started.
 
 1. Clone the repository to your local system/jump/UPI node.
-   # git clone <repository-path-here>
+   # git clone </repository-path-here/>
 
 2. If you're running the tasks from a host where oc binary is already available you can skip this point and move on to the next step.
    Otherwise,
