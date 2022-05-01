@@ -21,6 +21,8 @@ Here's how to get started.
 5. The deploy-prepare playbook makes use of Ansible tags to grant more granular control to the user while configuring the cluster. A few tasks are labelled with tag "always"
    which suggests that the tasks included in that playbook would run irrespective of the tags provided by the user as those resources are needed clusterwide to proceed
    further with STF.
+   For e.g , to just configure grafana operator:
+   # ansible-playbook -vv deploy-prepare.yaml -t grafana
   
 6. Once the required resources are created, the STF deployment can then be triggered.
    # ansible-playbook -vv deploy-stf.yaml
