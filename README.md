@@ -13,7 +13,7 @@ Here's how to get started.
      Here's a quick reference: https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/getting-started-cli.html
 
 3. Login to the OCP Cluster by either using user/pass combination or a login token provided by the cluster.
-   # oc login -u kubeadmin <api-url>
+   # oc login -u kubeadmin </api-url/>
   
 4. Run the deploy-prepare.yaml playbook to create the "service-telemetry" namespace, operatorgroups and different operators, object required for setting up STF.
    # ansible-playbook -vv deploy-prepare.yaml
